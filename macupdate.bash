@@ -19,7 +19,6 @@ RESTART=false
 
 #check for updates
 softwareupdate --list --verbose &> updatelist.txt
-grep -q 'restart' updatelist.txt && RESTART=true
 
 #read updatelog to stdout
 input="updatelist.txt"
@@ -28,9 +27,8 @@ do
   echo "$var"
 done < "$input"
 
-
-#Unzip support files
-bsdtar -xf quitapps.zip
+#set restart flag if needed
+grep -q 'restart' updatelist.txt && RESTART=true
 
 #Display maintenance warning
 osascript -e 'tell app "System Events" to display dialog "This computer will close all programs in 5 minutes for maintenance. Please save your work." buttons {"OK"} default button 1 with icon caution with title "Starting Maintenance - Save Your Work" giving up after 300'
@@ -38,8 +36,16 @@ osascript -e 'tell app "System Events" to display dialog "This computer will clo
 #give user 5 mins to finish working
 sleep 300
 
-#try to friendly quit open applications
-open quitapps.app 2>&1
+#close Mac apps that require updating
+grep -q 'iTunes' updatelist.txt && pkill "iTunes"
+grep -q 'Pages' updatelist.txt && pkill "Pages"
+grep -q 'Numbers' updatelist.txt && pkill "Numbers"
+grep -q 'Keynote' updatelist.txt && pkill "Keynote"
+grep -q 'iPhoto' updatelist.txt && pkill "iPhoto"
+grep -q 'Photos' updatelist.txt && pkill "Photos"
+grep -q 'GarageBand' updatelist.txt && pkill "GarageBand"
+grep -q 'iMovie' updatelist.txt && pkill "iMovie"
+grep -q 'Safari' updatelist.txt && pkill "Safari"
 
 #Check for and run OS updates
 softwareupdate -ia --verbose 2>&1
@@ -62,6 +68,5 @@ else
 fi
 
 else
-	osascript -e 'tell app "System Events" to display dialog "Maintenance has completed. You can use this computer again." buttons {"OK"} default button 1 with title "Maintenance Complete" giving up after 60'
 	exit
 fi

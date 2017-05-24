@@ -13,3 +13,10 @@ run silently in background unless needed
   no restart required, no open apps - run update silently in background
   Pages is open, need to close to update - The following apps will close for updating in 2 minutes:Pages. Please save your work.
   OS update requires restart - Running updates. Restart required. Please save your work.
+
+
+CONFIRMED
+3rd Party Apps from App store do not show in softwareupdate --list
+--UNKNOWN: will 3rdparty apps show if distributed through VolumeLicensing? OR Can volume licensing be pushed out through Profile manager?
+--UNCONFIRMED: will apple iWork and iLife apps list and update through softwareupdate?
+----iTunes does list and update. ran itunes update while itunes was running and received error exit code. not sure if it was because app was running, but the update completed successfully.
