@@ -17,6 +17,18 @@
 #define and initialize variables
 RESTART=false
 
+#check for updates
+softwareupdate --list --verbose &> updatelist.txt
+grep -q 'restart' updatelist.txt && RESTART=true
+
+#read updatelog to stdout
+input="updatelist.txt"
+while IFS= read -r var
+do
+  echo "$var"
+done < "$input"
+
+
 #Unzip support files
 bsdtar -xf quitapps.zip
 
@@ -30,15 +42,7 @@ sleep 300
 open quitapps.app 2>&1
 
 #Check for and run OS updates
-softwareupdate -ia --verbose &> updatelog.txt
-grep -q 'restart' updatelog.txt && RESTART=true
-
-#read updatelog to stdout
-input="updatelog.txt"
-while IFS= read -r var
-do
-  echo "$var"
-done < "$input"
+softwareupdate -ia --verbose 2>&1
 
 #Check if reboot is needed
 if [ $RESTART = true ]; then
